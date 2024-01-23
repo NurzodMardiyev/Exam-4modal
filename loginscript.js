@@ -73,7 +73,8 @@ formSignIn.addEventListener("submit", async (event) => {
     }
     const data = await res.json();
     console.log(data);
-
+    localStorage.setItem("token", data.token);
+    location.href = "./index.html";
     formSignIn.reset();
   } catch (error) {
     console.error("Error", error);

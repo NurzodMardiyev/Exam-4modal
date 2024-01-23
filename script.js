@@ -1,20 +1,8 @@
-fetch("https://crudcrud.com/api/704510dac0bb4190bdf84aea650b293d/users")
-  .then((res2) => {
-    return res2.json();
-  })
-  .then((data) => {
-    for (let key of data) {
-      if (!correct) {
-        location.href = "./login.html";
-      }
-    }
-    // formSignIn.reset();
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-
 document.addEventListener("DOMContentLoaded", function () {
+  const dataToken = localStorage.getItem("token");
+  if (!dataToken) {
+    location.href = "./login.html";
+  }
   // Start Loader
   const enterForm = document.querySelector("#formEnter");
 
@@ -26,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   };
 
-  render("tasks");
+  // render("tasks");
   enterForm.addEventListener("submit", (event) => {
     event.preventDefault();
     // variebles
@@ -37,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const todoInfo = {
       id: dataBase.tasksAll.length,
-      taskName: taskName.value,
+      // taskName: taskName.value,
       textArea: textArea.value,
       currentDate: currentDate.value,
       complate: false,
@@ -46,26 +34,44 @@ document.addEventListener("DOMContentLoaded", function () {
     dataBase.addTask(todoInfo);
     localStorage.setItem("tasks", JSON.stringify(dataBase.tasksAll));
 
-    render("tasks");
     console.log(dataBase);
-  });
 
-  function render(result) {
-    const formCreate = document.querySelector("#tableID");
+    async function render(result) {
+      const formCreate = document.querySelector("#tableID");
+      try {
+        const res = await fetch("https://todo-for-n92.cyclic.app/todos/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": localStorage.getItem("tasks"),
+          },
+          body: {
+            task: JSON.stringify(taskName.value),
+          },
+        });
+        if (!res.ok) {
+          throw new Error("Error something Api");
+        }
+        const data = await res.json();
+        console.log(data);
+        // return data;
+      } catch (error) {
+        console.log(error);
+      }
 
-    formCreate.innerHTML = "";
+      formCreate.innerHTML = "";
 
-    switch (result) {
-      case "tasks":
-        dataBase.tasksAll.forEach((eachTask) => {
-          const template = `
+      switch (result) {
+        case "tasks":
+          dataBase.tasksAll.forEach((eachTask) => {
+            const template = `
             <div class="todo-info d-flex align-items-start gap-4 p-2 my-4">
               <input type="checkbox" class="mt-2" id="for${eachTask.id}" />
               <label
                 class="companents border-bottom border-primary pb-2"
                 for="for${eachTask.id}"
               >
-                <h2 class="fs-4">${eachTask.taskName}</h2>
+                <h2 class="fs-4">${eachTask.id}</h2>
                 <p>
                   ${eachTask.textArea}
                 </p>
@@ -81,16 +87,18 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
           `;
 
-          const counter = document.querySelector(".counter");
-          counter.textContent = `${eachTask.id + 1}`;
-          formCreate.innerHTML += template;
-        });
-        break;
+            const counter = document.querySelector(".counter");
+            counter.textContent = `${eachTask.id + 1}`;
+            formCreate.innerHTML += template;
+          });
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
     }
-  }
+    render("tasks");
+  });
 
   const deleteItem = document.querySelector("#delete");
   deleteItem.addEventListener("click", deleteList);
