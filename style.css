@@ -1,0 +1,82 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.bg-back {
+  background-color: #cdd8fb;
+}
+.form-control:focus {
+  box-shadow: 0 0 0 0rem rgba(0, 0, 0, 0) !important;
+}
+.tasks {
+  box-shadow: 0px 5px 30px 1px rgba(0, 0, 0, 0.418);
+}
+#taskName {
+  font-size: 20px;
+}
+#taskName::placeholder {
+  color: #cccddb;
+  font-weight: 600;
+}
+#discription {
+  height: 80px;
+  font-size: 18px;
+}
+#discription::placeholder {
+  color: #cccddb;
+}
+.tz-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.date-box {
+  display: flex;
+  gap: 10px;
+}
+[data-date] {
+  border: 1px solid #edeff4;
+  border-radius: 5px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+#date:focus-visible {
+  outline: none;
+}
+.btn-box {
+  display: flex;
+  gap: 10px;
+}
+.btn-box button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #edeff4;
+  background-color: inherit;
+}
+#add {
+  background: #682ee4;
+  color: #fff;
+}
+#flexRadioDefault1:checked {
+  border: 1px solid green;
+  background: #333;
+}
+.editDelete span {
+  cursor: pointer;
+}
+.counter {
+  width: 30px;
+  height: 30px;
+  background-color: #682ee4;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border-radius: 100px;
+}
