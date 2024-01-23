@@ -1,3 +1,19 @@
+fetch("https://crudcrud.com/api/704510dac0bb4190bdf84aea650b293d/users")
+  .then((res2) => {
+    return res2.json();
+  })
+  .then((data) => {
+    for (let key of data) {
+      if (!correct) {
+        location.href = "./login.html";
+      }
+    }
+    // formSignIn.reset();
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
 document.addEventListener("DOMContentLoaded", function () {
   // Start Loader
   const enterForm = document.querySelector("#formEnter");
@@ -83,7 +99,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const checkboxes = document.querySelectorAll('[type="checkbox"]:checked');
 
     if (checkboxes.length > 0) {
-      const confirmDelete = confirm("Ishonching komilmi idiot");
+      const confirmDelete = confirm("Ishonching komilmi");
+      if (confirmDelete) {
+        checkboxes.forEach((checkbox) => {
+          const itemLocalStorage = JSON.parse(localStorage.getItem("tasks"));
+          delete itemLocalStorage;
+          const row = checkbox.closest(".todo-info");
+          row.remove();
+        });
+      }
+    } else {
+      console.log(checkboxes);
+      alert("tanlanmagan");
+    }
+  }
+
+  function editList() {
+    const checkboxes = document.querySelectorAll('[type="checkbox"]:checked');
+
+    if (checkboxes.length > 0) {
+      const confirmDelete = confirm("Ishonching komilmi");
       if (confirmDelete) {
         checkboxes.forEach((checkbox) => {
           const itemLocalStorage = JSON.parse(localStorage.getItem("tasks"));

@@ -12,56 +12,32 @@ loginBtn.addEventListener("click", () => {
 // !======================Sign Up=========================
 const createAccount = document.querySelector("#createAccount");
 const content = document.querySelector(".content");
-const API = "https://todo-for-n92.cyclic.app/user/register";
 createAccount.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const name = event.target[0],
+  const username = event.target[0],
     email = event.target[1],
     password = event.target[2];
 
-  const users = {
-    name: name.value,
-    email: email.value,
-    password: password.value,
-  };
-
   // Set Data to Backend
   try {
-    const res = await fetch(API, {
+    const res = await fetch("https://todo-for-n92.cyclic.app/user/register", {
       method: "POST",
       // mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(users),
+      body: JSON.stringify({
+        username: username.value,
+        password: password.value,
+      }),
     });
     if (!res.ok) {
-      throw new Error("Error something student");
+      throw new Error("Error something Api");
     }
     const data = await res.json();
     console.log(data);
     createAccount.reset();
-
-    // fetch(API)
-    //   .then((result) => {
-    //     return result.json();
-    //   })
-    //   .then((data) => {
-    // for (let i of data) {
-    // switch (true) {
-    //   case i.email == student.email:
-    //     console.log("bu bor");
-    //     break;
-    //   default:
-    //     console.log("bu ne");
-    //     break;
-    // }
-
-    // }
-    //   console.log(data);
-    // });
-    // console.log(data);
   } catch (error) {
     console.error("Error", error);
     console.log(error.message);
@@ -72,29 +48,34 @@ createAccount.addEventListener("submit", async (event) => {
 
 const formSignIn = document.querySelector("#formSignIn");
 
-formSignIn.addEventListener("submit", (event) => {
+formSignIn.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const email = event.target[0].value,
-    password = event.target[1].value;
+  const username = event.target[0],
+    password = event.target[1];
 
-  fetch(API)
-    .then((res2) => {
-      return res2.json();
-    })
-    .then((data) => {
-      for (let key of data) {
-        if (email === key.email && password === key.password) {
-          console.log(key.name);
-          location.href = "./index.html";
-        } else {
-          const failed = document.querySelector("#failed");
-          failed.style.borderColor = "red";
-        }
-      }
-      // formSignIn.reset();
-    })
-    .catch((err) => {
-      console.log(err);
+  try {
+    const res = await fetch("https://todo-for-n92.cyclic.app/user/login", {
+      method: "POST",
+      // mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username.value,
+        password: password.value,
+      }),
     });
+    if (!res.ok) {
+      const failed = document.querySelector("#failed");
+      failed.style.borderColor = "red";
+      throw new Error("Error something Api");
+    }
+    const data = await res.json();
+    console.log(data);
+
+    formSignIn.reset();
+  } catch (error) {
+    console.error("Error", error);
+  }
 });
