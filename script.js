@@ -13,12 +13,12 @@ document.addEventListener("DOMContentLoaded", function () {
       this.tasksAll.push(newTask);
     },
   };
-
   // render("tasks");
+  const dataInLocalDB = [];
   enterForm.addEventListener("submit", (event) => {
     event.preventDefault();
     // variebles
-    const taskName = event.target[0],
+    const task = event.target[0].value,
       textArea = event.target[1],
       currentDate = event.target[2],
       cancel = event.target[3];
@@ -34,72 +34,78 @@ document.addEventListener("DOMContentLoaded", function () {
     dataBase.addTask(todoInfo);
     localStorage.setItem("tasks", JSON.stringify(dataBase.tasksAll));
 
-    console.log(dataBase);
+    // console.log(dataBase);
 
     async function render(result) {
       const formCreate = document.querySelector("#tableID");
-      try {
-        const res = await fetch("https://todo-for-n92.cyclic.app/todos/add", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-access-token": localStorage.getItem("tasks"),
-          },
-          body: {
-            task: JSON.stringify(taskName.value),
-          },
-        });
-        if (!res.ok) {
-          throw new Error("Error something Api");
-        }
-        const data = await res.json();
-        console.log(data);
-        // return data;
-      } catch (error) {
-        console.log(error);
-      }
+      fetch("https://todo-for-n92.cyclic.app/todos/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": localStorage.getItem("token"),
+        },
+        body: JSON.stringify({ task }),
+      })
+        .then((response) => response.json())
 
-      formCreate.innerHTML = "";
+        .then((data) => {
+          const dataInLocal = {
+            data: data,
+          };
+          dataInLocalDB.push(dataInLocal);
 
-      switch (result) {
-        case "tasks":
-          dataBase.tasksAll.forEach((eachTask) => {
-            const template = `
-            <div class="todo-info d-flex align-items-start gap-4 p-2 my-4">
-              <input type="checkbox" class="mt-2" id="for${eachTask.id}" />
-              <label
-                class="companents border-bottom border-primary pb-2"
-                for="for${eachTask.id}"
-              >
-                <h2 class="fs-4">${eachTask.id}</h2>
-                <p>
-                  ${eachTask.textArea}
-                </p>
-                <div class="dateAndUsers d-flex align-items-center gap-3">
-                  <span class="d-flex align-items-center gap-2"
-                    ><i class="fa fa-calendar"></i>${eachTask.currentDate}</span
-                  >
-                  <span class="d-flex align-items-center gap-2"
-                    ><i class="fa fa-user-o"></i> Esther Howard</span
-                  >
-                </div>
-              </label>
-            </div>
-          `;
-
-            const counter = document.querySelector(".counter");
-            counter.textContent = `${eachTask.id + 1}`;
-            formCreate.innerHTML += template;
+          console.log(dataInLocalDB);
+          dataInLocalDB.forEach((item) => {
+            renderHtml(item, "tasks");
+            return item;
           });
-          break;
+        })
+        .catch((error) => console.error("Add Todo Error:", error));
+      renderHtml("item", "tasks");
+      function renderHtml(ress, result) {
+        formCreate.innerHTML = "";
+        console.log(ress);
+        switch (result) {
+          case "tasks":
+            dataBase.tasksAll.forEach((eachTask) => {
+              const template = `
+              <div class="todo-info d-flex align-items-start gap-4 p-2 my-4">
+                <input type="checkbox" class="mt-2" id="for${eachTask.id}" />
+                <label
+                  class="companents border-bottom border-primary pb-2"
+                  for="for${eachTask.id}"
+                >
+                  <h2 class="fs-4">${ress.todo.task}</h2>
+                  <p>
+                    ${eachTask.textArea}
+                  </p>
+                  <div class="dateAndUsers d-flex align-items-center gap-3">
+                    <span class="d-flex align-items-center gap-2"
+                      ><i class="fa fa-calendar"></i>${eachTask.currentDate}</span
+                    >
+                    <span class="d-flex align-items-center gap-2"
+                      ><i class="fa fa-user-o"></i> Esther Howard</span
+                    >
+                  </div>
+                </label>
+              </div>
+            `;
 
-        default:
-          break;
+              const counter = document.querySelector(".counter");
+              counter.textContent = `${eachTask.id + 1}`;
+              formCreate.innerHTML += template;
+            });
+            break;
+
+          default:
+            break;
+        }
       }
     }
-    render("tasks");
+    // renderHtml("tasks");
   });
 
+  // Delete function
   const deleteItem = document.querySelector("#delete");
   deleteItem.addEventListener("click", deleteList);
 
