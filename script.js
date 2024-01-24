@@ -36,8 +36,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // console.log(dataBase);
 
-    async function render(result) {
-      const formCreate = document.querySelector("#tableID");
+    // Backenddan kelayotgan message task
+    async function render() {
       fetch("https://todo-for-n92.cyclic.app/todos/add", {
         method: "POST",
         headers: {
@@ -53,56 +53,57 @@ document.addEventListener("DOMContentLoaded", function () {
             data: data,
           };
           dataInLocalDB.push(dataInLocal);
+          renderHtml(result);
 
           console.log(dataInLocalDB);
-          dataInLocalDB.forEach((item) => {
-            renderHtml(item, "tasks");
-            return item;
-          });
         })
         .catch((error) => console.error("Add Todo Error:", error));
-      renderHtml("item", "tasks");
-      function renderHtml(ress, result) {
-        formCreate.innerHTML = "";
-        console.log(ress);
-        switch (result) {
-          case "tasks":
-            dataBase.tasksAll.forEach((eachTask) => {
-              const template = `
-              <div class="todo-info d-flex align-items-start gap-4 p-2 my-4">
-                <input type="checkbox" class="mt-2" id="for${eachTask.id}" />
-                <label
-                  class="companents border-bottom border-primary pb-2"
-                  for="for${eachTask.id}"
-                >
-                  <h2 class="fs-4">${ress.todo.task}</h2>
-                  <p>
-                    ${eachTask.textArea}
-                  </p>
-                  <div class="dateAndUsers d-flex align-items-center gap-3">
-                    <span class="d-flex align-items-center gap-2"
-                      ><i class="fa fa-calendar"></i>${eachTask.currentDate}</span
-                    >
-                    <span class="d-flex align-items-center gap-2"
-                      ><i class="fa fa-user-o"></i> Esther Howard</span
-                    >
-                  </div>
-                </label>
-              </div>
-            `;
+    }
+    render();
 
-              const counter = document.querySelector(".counter");
-              counter.textContent = `${eachTask.id + 1}`;
-              formCreate.innerHTML += template;
-            });
-            break;
+    // LocalStoragedagoi malumotlar kelishi
+    function renderHtml(result) {
+      const formCreate = document.querySelector("#tableID");
+      formCreate.innerHTML = "";
+      console.log(result);
+      switch (result) {
+        case "tasks":
+          dataBase.tasksAll.forEach((eachTask) => {
+            const template = `
+        <div class="todo-info d-flex align-items-start gap-4 p-2 my-4">
+          <input type="checkbox" class="mt-2" id="for${eachTask.id}" />
+          <label
+            class="companents border-bottom border-primary pb-2"
+            for="for${eachTask.id}"
+          >
+            <h2 class="fs-4">${eachTask.task}</h2>
+            <p>
+              ${eachTask.textArea}
+            </p>
+            <div class="dateAndUsers d-flex align-items-center gap-3">
+              <span class="d-flex align-items-center gap-2"
+                ><i class="fa fa-calendar"></i>${eachTask.currentDate}</span
+              >
+              <span class="d-flex align-items-center gap-2"
+                ><i class="fa fa-user-o"></i> Esther Howard</span
+              >
+            </div>
+          </label>
+        </div>
+      `;
 
-          default:
-            break;
-        }
+            const counter = document.querySelector(".counter");
+            counter.textContent = `${eachTask.id + 1}`;
+            formCreate.innerHTML += template;
+          });
+          break;
+
+        default:
+          break;
       }
     }
-    // renderHtml("tasks");
+
+    renderHtml("tasks");
   });
 
   // Delete function
